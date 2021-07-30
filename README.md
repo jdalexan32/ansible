@@ -1,2 +1,2 @@
 # ansible
-Ansible code for automating configuration changes to the infrastructure created in the terraform repository.
+Ansible code for automating security group configuration changes that are implmented in the infrastructure created in the terraform repository.
