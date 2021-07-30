@@ -3,10 +3,10 @@
   hosts: localhost
   tasks:
     
-    # Create security group - outfield_1-new-nsg
+    # Create security group - azureVMs_1-new-nsg
     - azure.azcollection.azure_rm_securitygroup:
-        resource_group: outfield-rg
-        name: outfield-new-nsg
+        resource_group: azureVMs-rg
+        name: azureVMs-new-nsg
         purge_rules: yes
         rules:
           - name: Deny-SSH
