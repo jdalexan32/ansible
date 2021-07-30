@@ -3,10 +3,10 @@
   hosts: localhost
   tasks:
 
-    # Edit security group - outfield-subnet1-nsg
+    # Edit security group - azureVMs-subnet1-nsg
     - azure.azcollection.azure_rm_securitygroup:
-        resource_group: outfield-rg
-        name: outfield-subnet1-nsg
+        resource_group: azureVMs-rg
+        name: azureVMs-subnet1-nsg
         rules:
           - name: Allow-SSH
             protocol: Tcp

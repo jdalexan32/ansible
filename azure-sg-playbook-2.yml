@@ -3,10 +3,10 @@
   hosts: localhost
   tasks:
 
-    # Edit security group - outfield_1-new-nsg
+    # Edit security group - azureVMs_1-new-nsg
     - azure.azcollection.azure_rm_securitygroup:
-        resource_group: outfield-rg
-        name: outfield-new-nsg
+        resource_group: azureVMs-rg
+        name: azureVMs-new-nsg
         rules:
           - name: Allow-SSH-from-Home
             protocol: Tcp

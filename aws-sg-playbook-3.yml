@@ -6,10 +6,10 @@
   
   - debug: var=PRIVATE_SG_NAME
 
-  # Update rules on existing security group - outfield-private-ec2-sg
+  # Update rules on existing security group - aws2TierArch-private-ec2-sg
   - name: Edit security group
     amazon.aws.ec2_group:
-      #name: "outfield-private-ec2-sg-20210621074340320900000002"
+      #name: "aws2TierArch-private-ec2-sg-20210621074340320900000002"
       name: "{{ PRIVATE_SG_NAME }}"
       description: "Allows HTTP (80/8080) ingress from public subnets, open ingress from private_ec2_security_group, and open egress"
       region: eu-central-1
@@ -59,7 +59,7 @@
           from_port: 80
           to_port: 80
           #group_id: "{{ PRIVATE_SG_ID }}"
-          #group_name: "outfield-private-ec2-sg-20210621074340320900000002"
+          #group_name: "aws2TierArch-private-ec2-sg-20210621074340320900000002"
           group_name: "{{ PRIVATE_SG_NAME }}"
         - proto: tcp
           from_port: 3306

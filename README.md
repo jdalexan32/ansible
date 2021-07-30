@@ -81,16 +81,16 @@ Populate the required Ansible variables
 2. Install amazon.aws collection    
       ```ansible-galaxy collection install amazon.aws```    
 
-3. Set region for outfield profile    
-      ```aws configure set region eu-central-1 --profile outfield```    
+3. Set region for azureVMs profile    
+      ```aws configure set region eu-central-1 --profile azureVMs```    
 
-4. Set output format for outfield profile    
-      ```aws configure set output yaml --profile outfield```    
+4. Set output format for azureVMs profile    
+      ```aws configure set output yaml --profile azureVMs```    
 
 5. Set Profile    
-      ```export AWS_PROFILE=outfield```    
+      ```export AWS_PROFILE=azureVMs```    
 
-6. Check that outfield profile is configured    
+6. Check that azureVMs profile is configured    
       ```aws configure list```    
 
 7. Now ready to run ansible playbooks    

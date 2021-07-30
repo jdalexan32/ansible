@@ -4,11 +4,11 @@
   connection: local
   tasks:
   
-  # Gather information about outfield-vpc
+  # Gather information about aws2TierArch-vpc
   - amazon.aws.ec2_vpc_net_info:
-      profile: "outfield"
+      profile: "aws2TierArch"
       filters:
-        "tag:Name": "outfield-vpc"
+        "tag:Name": "aws2TierArch-vpc"
     register: vpc
 
   - set_fact:
@@ -20,7 +20,7 @@
   - amazon.aws.ec2_group_info:
       filters:
         "tag:Name":
-          - outfield-private-ec2-sg
+          - aws2TierArch-private-ec2-sg
     register: private_sg
 
   - set_fact:
@@ -34,7 +34,7 @@
   - amazon.aws.ec2_group_info:
       filters:
         "tag:Name":
-          - outfield-public-ec2-sg
+          - aws2TierArch-public-ec2-sg
     register: public_sg
 
   - set_fact:
@@ -47,7 +47,7 @@
   - amazon.aws.ec2_group_info:
       filters:
         "tag:Name":
-          - outfield-lb-sg
+          - aws2TierArch-lb-sg
     register: lb_sg
 
   - set_fact:

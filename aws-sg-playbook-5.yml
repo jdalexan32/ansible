@@ -8,7 +8,7 @@
   - name: Create and associate network ACL with public subnets
     community.aws.ec2_vpc_nacl:
       vpc_id: "{{ VPC_ID }}"
-      name: outfield-public-acl
+      name: aws2TierArch-public-acl
       region: eu-central-1
       subnets: ['-public-eu-central-1a', '-public-eu-central-1b']
       tags:
