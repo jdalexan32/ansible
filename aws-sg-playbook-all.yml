@@ -1,0 +1,25 @@
+---
+- hosts: localhost
+  tasks:
+    - debug:
+        msg: run playbooks
+
+# Gather vpc and sg info
+- name: 1st playbook
+  import_playbook: aws-sg-playbook-1.yml
+
+# Create sg
+- name: 2nd playbook
+  import_playbook: aws-sg-playbook-2.yml
+
+# Edit sg
+- name: 3rd playbook
+  import_playbook: aws-sg-playbook-3.yml
+
+# Create acl
+- name: 4th playbook
+  import_playbook: aws-sg-playbook-4.yml
+
+# Edit acl
+- name: 5th playbook
+  import_playbook: aws-sg-playbook-5.yml

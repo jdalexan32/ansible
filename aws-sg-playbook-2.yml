@@ -1,0 +1,81 @@
+---
+- name: Manage sg's with aws collection - Create security group
+  hosts: localhost
+  connection: local
+  tasks:
+  
+  # Create security group - outfield-new-sg
+  - name: Create a security group
+    ec2_group:
+      name: outfield-new-sg
+      description: "Ansible Security Group"
+                    # Allow HTTP (80/8080) and SSH (22) from internet,
+                    # open ingress from private_ec2_security_group,
+                    # MySQL (3306) from outfield-lb-sg,
+                    # ports 10050-10051 from outfield-public-ec2-sg,
+                    # icmp from vpc
+                    # ingress from outfield-private-ec2-sg,
+                    # open ingress from vpc,
+                    # and HTTP (80) egress to internet
+      #region: eu-central-1
+      profile: "outfield"
+      vpc_id: "{{ VPC_ID }}"
+      #vpc_id: "vpc-0afd01d8d63ad5328"
+      #vpc_id: "{{ vpc.vpcs[0].vpc_id }}"
+      
+      rules:
+        - proto: tcp
+          from_port: 80
+          to_port: 80
+          cidr_ip: 0.0.0.0/0
+        - proto: tcp
+          from_port: 8080
+          to_port: 8080
+          cidr_ip: 0.0.0.0/0
+        - proto: tcp
+          from_port: 22
+          to_port: 22
+          cidr_ip: 0.0.0.0/0
+        - proto: tcp
+          from_port: 3306
+          to_port: 3306
+          group_id: "{{ LB_SG_ID }}"
+        - proto: udp
+          from_port: 10050
+          to_port: 10050
+          group_id: "{{ PUBLIC_SG_ID }}"
+        - proto: udp
+          from_port: 10051
+          to_port: 10051
+          group_id: "{{ PUBLIC_SG_ID}}"
+        - proto: icmp
+          from_port: 8 # icmp type, -1 = any type
+          to_port:  -1 # icmp subtype, -1 = any subtype
+          cidr_ip: 10.0.0.0/16
+        - proto: all
+          # the containing group name may be specified here
+          group_id: "{{ PRIVATE_SG_ID }}"
+        - proto: all
+          # in the 'proto' attribute, if you specify -1, all, or a protocol number other than tcp, udp, icmp, or 58 (ICMPv6),
+          # traffic on all ports is allowed, regardless of any ports you specify
+          cidr_ip: 10.0.0.0/16
+
+      rules_egress:
+        - proto: tcp
+          from_port: 80
+          to_port: 80
+          cidr_ip: 0.0.0.0/0
+          cidr_ipv6: 64:ff9b::/96
+          #group_id: "{{new_sg.group_id}}"
+
+    register: new_sg
+
+  - name: Tag the new security group with a name
+    local_action:
+      module: ec2_tag
+      resource: "{{new_sg.group_id}}"
+      region: eu-central-1
+      state: present
+      tags:
+        Name: "outfield-new-sg"
+

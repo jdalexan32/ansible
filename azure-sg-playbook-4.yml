@@ -1,0 +1,12 @@
+---
+- name: Manage nsg's with azure collection - associate security group to subnet
+  hosts: localhost
+  tasks:
+
+    # Create new subnet2 and associate security group outfield-new-nsg with subnet2
+    - azure.azcollection.azure_rm_subnet:
+        resource_group: outfield-rg
+        virtual_network_name: outfield-vnet
+        name: subnet2
+        address_prefix_cidr: "10.0.3.0/24"
+        security_group: outfield-new-nsg

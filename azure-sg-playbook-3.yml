@@ -1,0 +1,29 @@
+---
+- name: Manage nsg's with azure collection - edit security group
+  hosts: localhost
+  tasks:
+
+    # Edit security group - outfield-subnet1-nsg
+    - azure.azcollection.azure_rm_securitygroup:
+        resource_group: outfield-rg
+        name: outfield-subnet1-nsg
+        rules:
+          - name: Allow-SSH
+            protocol: Tcp
+            source_address_prefix: '10.0.1.0/24'
+            destination_port_range: 22
+            access: Allow
+            priority: 1000
+            direction: Inbound
+
+          - name: Allow-HTTP
+            protocol: Tcp
+            source_address_prefix: '10.0.1.0/24'
+            destination_port_range: 80
+            access: Allow
+            priority: 1010
+            direction: Inbound
+
+          - name: ICMP
+            protocol: Icmp
+            priority: 1030

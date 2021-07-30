@@ -1,0 +1,58 @@
+---
+- name: Manage sg's with aws collection - gather vpc and sg information
+  hosts: localhost
+  connection: local
+  tasks:
+  
+  # Gather information about outfield-vpc
+  - amazon.aws.ec2_vpc_net_info:
+      profile: "outfield"
+      filters:
+        "tag:Name": "outfield-vpc"
+    register: vpc
+
+  - set_fact:
+      VPC_ID: "{{ vpc.vpcs[0].vpc_id }}"
+
+  - debug: var=VPC_ID
+
+  # Gather information about security groups
+  - amazon.aws.ec2_group_info:
+      filters:
+        "tag:Name":
+          - outfield-private-ec2-sg
+    register: private_sg
+
+  - set_fact:
+      PRIVATE_SG_ID: '{{ private_sg.security_groups | map(attribute="group_id") }}'
+      #PRIVATE_SG_NAME: '{{ private_sg.security_groups | map(attribute="group_name") }}'
+      PRIVATE_SG_NAME: '{{ private_sg.security_groups[0].group_name }}'
+
+  - debug: var=PRIVATE_SG_ID
+  - debug: var=PRIVATE_SG_NAME
+
+  - amazon.aws.ec2_group_info:
+      filters:
+        "tag:Name":
+          - outfield-public-ec2-sg
+    register: public_sg
+
+  - set_fact:
+      PUBLIC_SG_ID: '{{ public_sg.security_groups | map(attribute="group_id") }}'
+      PUBLIC_SG_NAME: '{{ public_sg.security_groups | map(attribute="group_name") }}'
+
+  - debug: var=PUBLIC_SG_ID
+  - debug: var=PUBLIC_SG_NAME
+
+  - amazon.aws.ec2_group_info:
+      filters:
+        "tag:Name":
+          - outfield-lb-sg
+    register: lb_sg
+
+  - set_fact:
+      LB_SG_ID: '{{ lb_sg.security_groups | map(attribute="group_id") }}'
+      LB_SG_NAME: '{{ lb_sg.security_groups | map(attribute="group_name") }}'
+
+  - debug: var=LB_SG_ID
+  - debug: var=LB_SG_NAME

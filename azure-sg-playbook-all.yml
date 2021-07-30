@@ -1,0 +1,17 @@
+---
+- hosts: localhost
+  tasks:
+    - debug:
+        msg: run playbooks
+
+- name: 1st playbook
+  import_playbook: azure-sg-playbook-1.yml
+
+- name: 2nd playbook
+  import_playbook: azure-sg-playbook-2.yml
+
+- name: 3rd playbook
+  import_playbook: azure-sg-playbook-3.yml
+
+- name: 4th playbook
+  import_playbook: azure-sg-playbook-4.yml

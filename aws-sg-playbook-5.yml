@@ -1,0 +1,26 @@
+---
+- name: Manage sg's with aws collection - edit ACL
+  hosts: localhost
+  connection: local
+  tasks:
+
+  # Edit ACL so that it allows HTTP and ICMP in (rmove SSH), and all traffic out
+  - name: Create and associate network ACL with public subnets
+    community.aws.ec2_vpc_nacl:
+      vpc_id: "{{ VPC_ID }}"
+      name: outfield-public-acl
+      region: eu-central-1
+      subnets: ['-public-eu-central-1a', '-public-eu-central-1b']
+      tags:
+        Description: new public acl
+      ingress:
+          # rule no, protocol, allow/deny, cidr, icmp_type, icmp_code, 
+          #                                             port from, port to
+          - [200, 'tcp', 'allow', '0.0.0.0/0', null, null, 80, 80]
+          - [205, 'tcp', 'allow', '::/0', null, null, 80, 80]
+          - [300, 'icmp', 'allow', '0.0.0.0/0', 0, 8]
+          - [305, 'ipv6-icmp', 'allow', '::/0', 0, 8]
+      egress:
+          - [100, 'all', 'allow', '0.0.0.0/0', null, null, null, null]
+          - [105, 'all', 'allow', '::/0', null, null, null, null]
+      state: 'present'

@@ -1,0 +1,69 @@
+---
+- name: Manage sg's with aws collection - Edit security group
+  hosts: localhost
+  connection: local
+  tasks:
+  
+  - debug: var=PRIVATE_SG_NAME
+
+  # Update rules on existing security group - outfield-private-ec2-sg
+  - name: Edit security group
+    amazon.aws.ec2_group:
+      #name: "outfield-private-ec2-sg-20210621074340320900000002"
+      name: "{{ PRIVATE_SG_NAME }}"
+      description: "Allows HTTP (80/8080) ingress from public subnets, open ingress from private_ec2_security_group, and open egress"
+      region: eu-central-1
+      vpc_id: "{{ VPC_ID }}"
+      #vpc_id: "vpc-0afd01d8d63ad5328"
+      #vpc_id: "{{ vpc.vpcs[0].vpc_id }}"
+      
+      rules:
+        - proto: tcp
+          from_port: 80
+          to_port: 80
+          cidr_ip: 0.0.0.0/0
+        - proto: tcp
+          from_port: 8080
+          to_port: 8080
+          cidr_ip: 0.0.0.0/0
+        - proto: tcp
+          from_port: 22
+          to_port: 22
+          cidr_ip: 0.0.0.0/0
+        - proto: tcp
+          from_port: 3306
+          to_port: 3306
+          group_id: "{{ LB_SG_ID }}"
+        - proto: udp
+          from_port: 10050
+          to_port: 10050
+          cidr_ip: 10.0.0.0/16
+        - proto: icmp
+          from_port: 8 # icmp type, -1 = any type
+          to_port:  -1 # icmp subtype, -1 = any subtype
+          cidr_ip: 10.0.0.0/16
+        - proto: all
+          # the containing group name may be specified here
+          group_id: "{{ PRIVATE_SG_ID }}"
+        - proto: all
+          # in the 'proto' attribute, if you specify -1, all, or a protocol number other than tcp, udp, icmp, or 58 (ICMPv6),
+          # traffic on all ports is allowed, regardless of any ports you specify
+          cidr_ip: 10.0.0.0/16
+
+      rules_egress:
+        - proto: tcp
+          from_port: 443
+          to_port: 443
+          cidr_ip: 0.0.0.0/0
+        - proto: tcp
+          from_port: 80
+          to_port: 80
+          #group_id: "{{ PRIVATE_SG_ID }}"
+          #group_name: "outfield-private-ec2-sg-20210621074340320900000002"
+          group_name: "{{ PRIVATE_SG_NAME }}"
+        - proto: tcp
+          from_port: 3306
+          to_port: 3306
+          cidr_ipv6: 64:ff9b::/96
+
+    register: pri_sg
